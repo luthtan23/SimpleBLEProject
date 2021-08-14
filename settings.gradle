@@ -1,0 +1,7 @@
+include ':feature_sample'
+include ':login'
+include ':dashboard'
+include ':domain'
+include ':data'
+include ':app'
+rootProject.name = "SimpleBLEProject"

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_login_app_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_font"
+            android:gravity="center"
+            android:text="@string/LOGIN_app_name"
+            android:textColor="?attr/colorOnSecondary"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/guideline_login_top" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_login_top"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_login_mid"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textlayout_login_username"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_login_mid"
+            app:startIconDrawable="@drawable/ic_baseline_person_outline">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_login_username"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/LOGIN_username"
+                android:inputType="text"
+                android:maxLength="15"
+                android:padding="16dp"
+                android:textSize="16sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textlayout_login_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/LOGIN_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textlayout_login_username"
+            app:passwordToggleDrawable="@drawable/show_password_selector"
+            app:passwordToggleEnabled="true"
+            app:startIconDrawable="@drawable/ic_outline_lock">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLength="15"
+                android:padding="16dp"
+                android:textSize="16sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_login_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+            android:text="@string/LOGIN_login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textlayout_login_password"
+            app:layout_constraintStart_toStartOf="@+id/textlayout_login_password"
+            app:layout_constraintTop_toBottomOf="@+id/textlayout_login_password" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
