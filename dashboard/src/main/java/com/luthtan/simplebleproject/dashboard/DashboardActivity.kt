@@ -50,7 +50,6 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
         getDataSample()
 
         activityDashboardBinding.btnDashboardStartStopAdvertising.setOnClickListener(this)
-//        activityDashboardBinding.btnDashboardStartStopAdvertising.isEnabled = false
     }
 
     private fun getServiceIntent(context: Context) : Intent {
