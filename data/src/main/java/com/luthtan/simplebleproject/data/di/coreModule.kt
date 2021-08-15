@@ -1,6 +1,7 @@
 package com.luthtan.simplebleproject.data.di
 
 import android.content.Context
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -34,6 +35,10 @@ val coreModule = module {
                 Context.MODE_PRIVATE
             )
         )
+    }
+
+    single {
+        FirebaseDatabase.getInstance().reference
     }
 
     single {

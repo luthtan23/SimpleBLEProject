@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.AdvertiseCallback
 import android.content.BroadcastReceiver
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -16,13 +17,24 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.customview.widget.ExploreByTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.*
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
+import com.google.firebase.ktx.options
+import com.google.gson.Gson
+import com.luthtan.simplebleproject.dashboard.adapter.DashboardAdapter
 import com.luthtan.simplebleproject.dashboard.databinding.ActivityDashboardBinding
 import com.luthtan.simplebleproject.dashboard.service.BleAdvertiserService
 import com.luthtan.simplebleproject.dashboard.utils.*
 import com.luthtan.simplebleproject.dashboard.viewmodel.DashboardViewModel
 import com.luthtan.simplebleproject.data.network.StatusResponse
 import com.luthtan.simplebleproject.data.repository.PreferencesRepository
+import com.luthtan.simplebleproject.domain.entities.dashboard.BleEntity
+import com.luthtan.simplebleproject.domain.response.dashboard.BleResponse
 import org.jetbrains.anko.alert
+import org.json.JSONArray
+import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,6 +42,12 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
     private val preference: PreferencesRepository by inject()
     private val dashboardViewModel: DashboardViewModel by viewModel()
+
+    private val database: DatabaseReference by inject()
+
+    private lateinit var activityDashboardBinding: ActivityDashboardBinding
+
+    private lateinit var dashboardAdapter: DashboardAdapter
 
     private val bluetoothAdapter: BluetoothAdapter by lazy {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -39,7 +57,7 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val activityDashboardBinding = ActivityDashboardBinding.inflate(layoutInflater)
+        activityDashboardBinding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(activityDashboardBinding.root)
         setSupportActionBar(activityDashboardBinding.toolbarDashboard)
 
@@ -47,7 +65,13 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
 //        startService(getServiceIntent(this))
 
-        getDataSample()
+        dashboardAdapter = DashboardAdapter()
+
+        setBleHistoryAdapter()
+
+        addPostEventListener(database)
+
+//        getDataSample()
 
         activityDashboardBinding.btnDashboardStartStopAdvertising.setOnClickListener(this)
     }
@@ -83,6 +107,59 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
+
+    private fun addPostEventListener(postReference: DatabaseReference) {
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val post = snapshot.value!!
+                val jsonString = Gson().toJson(post)
+                val jsonInit = JSONObject(jsonString)
+                val dashboard = jsonInit.getJSONObject("dashboard")
+                val uuid = dashboard.getJSONObject("uuid") //change uuid with real uuid
+                val bleEntity = Gson().fromJson(uuid.toString(), BleEntity::class.java)
+                setAttributeUI(bleEntity)
+                if (!bleEntity.status) {
+                    dashboardViewModel.insertRealtime(bleEntity)
+                    setBleHistoryAdapter()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "loadPost:onCancelled ${error.message}")
+            }
+        }
+        postReference.addValueEventListener(postListener)
+    }
+
+    private fun setAttributeUI(bleEntity: BleEntity) {
+        activityDashboardBinding.tvDashboardName.text = bleEntity.name
+        activityDashboardBinding.tvDashboardPosition.text = bleEntity.position
+        activityDashboardBinding.btnDashboardStartStopAdvertising.isEnabled = !bleEntity.status
+        if (bleEntity.status) {
+            activityDashboardBinding.tvDashboardRoomDescription.text = bleEntity.room
+            activityDashboardBinding.tvDashboardNumberPersonInRoom.text = bleEntity.numberPersonInRoom.toString()
+        } else {
+            activityDashboardBinding.tvDashboardRoomDescription.text = "-"
+            activityDashboardBinding.tvDashboardNumberPersonInRoom.text = "-"
+        }
+    }
+
+    private fun setBleHistoryAdapter() {
+        dashboardViewModel.getAllUserData().observe(this, { list ->
+            if (list != null) {
+                Log.d("LIST_TESTING", list.toString())
+                dashboardAdapter.setBleLogHistory(list)
+                activityDashboardBinding.rvDashboardHistory.apply {
+                    layoutManager = LinearLayoutManager(this@DashboardActivity)
+                    adapter = dashboardAdapter
+                    scheduleLayoutAnimation()
+                    setHasFixedSize(true)
+                }
+            }
+        })
+
+    }
+
 
     private fun getDataSample() {
         dashboardViewModel.getUserData().observe(this, { result ->

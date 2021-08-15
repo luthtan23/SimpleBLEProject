@@ -10,12 +10,9 @@ import com.luthtan.simplebleproject.domain.entities.dashboard.BleEntity
 @Dao
 interface DashboardDao {
 
-    @Query("SELECT * from movie_db")
+    @Query("SELECT * from user_ble_table ORDER BY id DESC")
     fun getAllUserData(): LiveData<List<BleEntity>>
 
-    @Query("SELECT * from movie_db")
-    fun getUserData(): LiveData<BleEntity>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUserData(bleEntity: BleEntity)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertUserData(bleEntity: BleEntity)
 }
