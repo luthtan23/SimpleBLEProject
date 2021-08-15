@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "879337419045",
+    "firebase_url": "https://simple-api-service-default-rtdb.firebaseio.com",
+    "project_id": "simple-api-service",
+    "storage_bucket": "simple-api-service.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879337419045:android:8630ca0f6f2731018baacc",
+        "android_client_info": {
+          "package_name": "com.luthtan.simplebleproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879337419045-ejel0ppdtj93vqej6sl23j6k21904vum.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luthtan.simplebleproject",
+            "certificate_hash": "e763db6863f6e3fa9be99e2552065beb1dc263b5"
+          }
+        },
+        {
+          "client_id": "879337419045-u04ps906bdcq6i1biath42rhrg32e55i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF3iY7dBg5nvB84-gTRSSOz5455VvLq_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879337419045-u04ps906bdcq6i1biath42rhrg32e55i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

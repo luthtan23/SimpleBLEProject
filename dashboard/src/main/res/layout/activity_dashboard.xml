@@ -17,7 +17,6 @@
         android:id="@+id/card_dashboard_id"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:layout_marginTop="8dp"
         app:cardCornerRadius="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -114,6 +113,7 @@
                         app:layout_constraintGuide_percent="0.5" />
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/tv_dashboard_number_person_in_room"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -173,6 +173,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layoutAnimation="@anim/layout_animation"
         tools:listitem="@layout/item_dashboard_detail" />
 
 </LinearLayout>
