@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">SimpleBLEProject</string>
+    <string name="title_dashboard_feature">Dashboard Feature</string>
+    <string name="title_login_feature">Login Feature</string>
 
+    <string name="eye_beacon_string_logo">eye-beacon</string>
 </resources>
