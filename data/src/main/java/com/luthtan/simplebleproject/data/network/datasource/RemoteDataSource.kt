@@ -14,7 +14,7 @@ class RemoteDataSource(private val apiService: ApiService) {
         val bleResponse = MutableLiveData<ApiResponse<BleResponse>>()
         GlobalScope.launch {
             try {
-                val request = apiService.getBleUser(BuildConfig.TOKEN)
+                val request = apiService.getBleUser()
                 if (request.isSuccessful) {
                     if (request.body() != null) {
                         bleResponse.postValue(ApiResponse.success(request.body()!!))

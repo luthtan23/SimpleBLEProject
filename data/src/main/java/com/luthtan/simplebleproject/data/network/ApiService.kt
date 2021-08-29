@@ -8,6 +8,6 @@ import retrofit2.http.Header
 interface ApiService {
 
     @GET(ApiConstant.DASHBOARD_URL)
-    suspend fun getBleUser(@Header("Authorization") token: String): Response<BleResponse>
+    suspend fun getBleUser(): Response<BleResponse>
 
 }

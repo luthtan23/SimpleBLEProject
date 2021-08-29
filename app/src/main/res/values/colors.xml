@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#b2dfdb</color>
-    <color name="primaryLightColor">#e5ffff</color>
-    <color name="primaryDarkColor">#82ada9</color>
-    <color name="secondaryColor">#b0bec5</color>
-    <color name="secondaryLightColor">#e2f1f8</color>
-    <color name="secondaryDarkColor">#808e95</color>
-    <color name="primaryTextColor">#000000</color>
+    <color name="primaryColor">#FFFFFF</color>
+    <color name="primaryLightColor">#718792</color>
+    <color name="primaryDarkColor">#455a64</color>
+    <color name="secondaryColor">#eeeeee</color>
+    <color name="secondaryLightColor">#ffffff</color>
+    <color name="secondaryDarkColor">#bcbcbc</color>
+    <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#AAAAAA</color>
 
+    <color name="backgroundColor">#1c313a</color>
+    <color name="customColorSurface">#FFFFFF</color>
+    <color name="customColorTextDefault">#ADFFFFFF</color>
+
     <color name="lighter_gray">#ddd</color>
     <!-- A dark gray, equivalent to 0xffaaaaaa -->
-    <color name="darker_gray">#aaa</color>
+    <color name="darker_gray">#4daaaaaa</color>
 
-<!--    background white-->
+    <!--    background white-->
     <color name="background_holo_light">#fff3f3f3</color>
 
-<!--    cardview-->
+    <!--    cardview-->
     <color name="dim_foreground_inverse_holo_dark">#323232</color>
+
+    <color name="linkTextColorLightMode">#5688DC</color>
+
 
 </resources>

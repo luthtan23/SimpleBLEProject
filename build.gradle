@@ -15,6 +15,9 @@ buildscript {
 
         //room
         roomVersion = '2.3.0'
+
+        //navigation component
+        nav_version = "2.3.5"
     }
     ext.kotlin_version = "1.4.32"
     repositories {

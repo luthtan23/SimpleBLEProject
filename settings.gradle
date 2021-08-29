@@ -1,6 +1,5 @@
-include ':feature_sample'
-include ':login'
-include ':dashboard'
+include ':login_feature'
+include ':dashboard_feature'
 include ':domain'
 include ':data'
 include ':app'
