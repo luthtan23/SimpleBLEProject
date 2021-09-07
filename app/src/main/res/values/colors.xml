@@ -16,6 +16,8 @@
     <color name="customColorSurface">#FFFFFF</color>
     <color name="customColorTextDefault">#ADFFFFFF</color>
 
+    <color name="customNavigationBarButton">#F2FFFFFF</color>
+
     <color name="lighter_gray">#ddd</color>
     <!-- A dark gray, equivalent to 0xffaaaaaa -->
     <color name="darker_gray">#4daaaaaa</color>

@@ -17,10 +17,11 @@ const val PERMISSION_REQUEST_LOCATION = 101
  */
 const val LOCATION_FINE_PERM = Manifest.permission.ACCESS_FINE_LOCATION
 const val LOCATION_PERMISSION_REQUEST_CODE = 2
-val ScanFilterService_UUID: ParcelUuid = ParcelUuid.fromString("0000b81d-0000-1000-8000-00805f9b34fb")
+val ScanFilterServiceUUID: ParcelUuid = ParcelUuid.fromString("0000fff2-0000-1000-8000-00805f9b34fb")
 
 const val BLUETOOTH_BROADCAST_RECEIVER = "android.bluetooth.adapter.action.STATE_CHANGED"
 const val BLUETOOTH_EXTRA = "android.bluetooth.adapter.extra.STATE"
 const val BLUETOOTH_EXTRA_INT = 10
 
 const val ADVERTISING_FAILED_EXTRA_CODE = "com.example.android.bluetoothadvertisements.advertising_failed"
+

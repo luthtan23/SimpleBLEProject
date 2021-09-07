@@ -1,7 +1,8 @@
-package com.luthtan.simplebleproject
+package com.luthtan.simplebleproject.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.Navigation
@@ -18,10 +19,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        Intent().setClassName(this, "$LOGIN_PACKAGE.$NAME_LOGIN_ACTIVITY").also { startActivity(it) }
-        finish()
+        /*Intent().setClassName(this, "$LOGIN_PACKAGE.$NAME_LOGIN_ACTIVITY").also { startActivity(it) }
+        finish()*/
 
         val activityBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityBinding.root)

@@ -49,7 +49,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
         binding.tvLoginRegister.makeLinks(pairMakeLinkRegister)
 
-        binding.tvRegisterPrivacyAgreement.makeLinks(pairMakeLinkPrivacyAgreement)
+//        binding.tvRegisterPrivacyAgreement.makeLinks(pairMakeLinkPrivacyAgreement)
     }
 
     override fun onResume() {
@@ -89,18 +89,18 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         requireActivity().supportFragmentManager.popBackStack()
     })
 
-    private val pairMakeLinkPrivacyAgreement = Pair(REGISTER_TO_PRIVACY_AGREEMENT_LINK, View.OnClickListener {
+    /*private val pairMakeLinkPrivacyAgreement = Pair(REGISTER_TO_PRIVACY_AGREEMENT_LINK, View.OnClickListener {
         privacyAgreementFragment()
-    })
+    })*/
 
-    private fun privacyAgreementFragment() {
+    /*private fun privacyAgreementFragment() {
         val privacyAgreementFragment = PrivacyAgreementFragment()
         requireActivity().supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_login_container, privacyAgreementFragment, privacyAgreementFragment.tag)
             addToBackStack(null)
             commit()
         }
-    }
+    }*/
 
 
 

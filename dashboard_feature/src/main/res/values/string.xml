@@ -44,7 +44,7 @@
     <string name="greeting">Hello,</string>
     <string name="position">position</string>
     <string name="uuid">UUID</string>
-    <string name="sample_uuid">00002a37&#8211;0000&#8211;1000&#8211;8000&#8211;00805f9b34fb</string>
+    <string name="sample_uuid"> 96b1d074-eecf-426b-94af-21f622b8cf27</string>
     <string name="room_title">You\'re in</string>
     <string name="sample_room">A344</string>
     <string name="sample_number_room">5</string>

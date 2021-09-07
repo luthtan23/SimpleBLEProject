@@ -27,6 +27,9 @@
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="android:windowBackground">@color/backgroundColor</item>
         <item name="colorControlHighlight">@color/darker_gray</item>
+        <item name="android:navigationBarColor">@color/customNavigationBarButton</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+
     </style>
 
     <style name="SplashScreenStyle" parent="Theme.SimpleBLEProject">

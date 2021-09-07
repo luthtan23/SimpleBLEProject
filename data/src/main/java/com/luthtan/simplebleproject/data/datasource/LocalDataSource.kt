@@ -1,4 +1,4 @@
-package com.luthtan.simplebleproject.data.network.datasource
+package com.luthtan.simplebleproject.data.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
