@@ -80,6 +80,11 @@
             android:text="@string/login_login_description"
             android:textColor="@color/black" />
 
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_test_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
     <RelativeLayout

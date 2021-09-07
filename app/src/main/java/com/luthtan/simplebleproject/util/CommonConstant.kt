@@ -1,4 +1,4 @@
-package com.luthtan.simplebleproject
+package com.luthtan.simplebleproject.util
 
 const val DASHBOARD_PACKAGE = "com.luthtan.simplebleproject.dashboard_feature"
 const val LOGIN_PACKAGE = "com.luthtan.simplebleproject.login_feature"

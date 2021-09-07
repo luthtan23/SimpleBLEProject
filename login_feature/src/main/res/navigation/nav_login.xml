@@ -5,19 +5,9 @@
     android:id="@+id/login_nav"
     app:startDestination="@id/loginFragment">
 
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.luthtan.simplebleproject.login_feature.ui.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.luthtan.simplebleproject.login_feature.ui.RegisterFragment"
-        android:label="RegisterFragment"
-        tools:layout="@layout/fragment_register"/>
-
+        android:label="LoginFragment" />
 </navigation>

@@ -10,24 +10,28 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
+import android.os.*
 import android.util.Log
 import androidx.customview.widget.ExploreByTouchHelper
 import com.luthtan.simplebleproject.dashboard_feature.DashboardActivity
 import com.luthtan.simplebleproject.dashboard_feature.R
 import com.luthtan.simplebleproject.dashboard_feature.utils.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class BleAdvertiserService : Service() {
 
     private val TAG = "AdvertiserService"
     private var bluetoothLeAdvertiser: BluetoothLeAdvertiser? = null
+    private var bluetoothGattServer: BluetoothGattServer? = null
     private var advertiseCallback: AdvertiseCallback? = null
     private var handler: Handler? = null
     private lateinit var bluetoothAdapter: BluetoothAdapter
+    private lateinit var bluetoothManager: BluetoothManager
+
+    private var isGattRegistered = false
+
+    private val registeredDevices = mutableSetOf<BluetoothDevice>()
 
     /**
      * Length of time to allow advertising before automatically shutting off. (10 minutes)
@@ -42,8 +46,7 @@ class BleAdvertiserService : Service() {
     override fun onCreate() {
         running = true
         initialize()
-        startAdvertising()
-        goForeground()
+        startBle()
         setTimeout()
         val filterIntent = IntentFilter(BLUETOOTH_BROADCAST_RECEIVER)
         registerReceiver(adviserBroadcast, filterIntent)
@@ -52,7 +55,7 @@ class BleAdvertiserService : Service() {
 
     override fun onDestroy() {
         running = false
-        stopAdvertising()
+        stopBle()
         handler?.removeCallbacksAndMessages(null) // this is a generic way for removing tasks
         stopForeground(true)
         unregisterReceiver(adviserBroadcast)
@@ -61,8 +64,8 @@ class BleAdvertiserService : Service() {
 
     private fun initialize() {
         if (bluetoothLeAdvertiser == null) {
-            val manager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-            bluetoothAdapter = manager.adapter
+            bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+            bluetoothAdapter = bluetoothManager.adapter
             bluetoothLeAdvertiser = bluetoothAdapter.bluetoothLeAdvertiser
         }
     }
@@ -105,23 +108,26 @@ class BleAdvertiserService : Service() {
 
         val notification = nBuilder.setContentTitle(getString(R.string.bt_notif_title))
             .setContentText(getString(R.string.bt_notif_txt))
-            .setSmallIcon(R.drawable.ic_baseline_groups_24)
+            .setSmallIcon(R.drawable.ic_stat_notification)
             .setContentIntent(pendingIntent)
             .build()
         startForeground(FOREGROUND_NOTIFICATION_ID, notification)
     }
 
     private fun buildAdvertiseSettings() = AdvertiseSettings.Builder()
-        .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_POWER)
+        .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED)
+        .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
+        .setConnectable(true)
         .setTimeout(0).build()
 
     private fun buildAdvertiseData() = AdvertiseData.Builder()
-        .addServiceUuid(ScanFilterService_UUID).setIncludeDeviceName(true).build()
+        .addServiceUuid(ScanFilterServiceUUID)
+        .setIncludeDeviceName(true).build()
 
     private fun sampleAdvertiseCallback() = object : AdvertiseCallback() {
         override fun onStartFailure(errorCode: Int) {
             super.onStartFailure(errorCode)
-            Log.d(TAG, "Advertising failed")
+            Log.d(TAG, "Advertising failed: $errorCode")
             broadcastFailureIntent(errorCode)
             stopSelf()
         }
@@ -175,11 +181,11 @@ class BleAdvertiserService : Service() {
         if (intent.action.equals(BLUETOOTH_BROADCAST_RECEIVER)) {
             when(intent.getIntExtra(BLUETOOTH_EXTRA, ExploreByTouchHelper.INVALID_ID)) {
                 BLUETOOTH_EXTRA_INT -> {
+                    stopBle()
                     val runnable = Runnable {
                         bluetoothAdapter.enable()
                         bluetoothLeAdvertiser = bluetoothAdapter.bluetoothLeAdvertiser
-                        stopAdvertising()
-                        startAdvertising()
+                        startBle()
                     }
                     Handler(Looper.myLooper()!!).postDelayed(runnable, TIME_BLUETOOTH_CHECKED)
                 }
@@ -187,63 +193,159 @@ class BleAdvertiserService : Service() {
         }
     }
 
+    private fun startBle() {
+        startAdvertising()
+        startServer()
+    }
+
+    private fun stopBle() {
+        stopAdvertising()
+        stopServer()
+    }
+
+    private fun startServer() {
+        Log.i(TAG, "Start Server BLE, UUID: ${UserProfile.getServiceUUID()}")
+        bluetoothGattServer?.clearServices()
+        bluetoothGattServer?.close()
+        bluetoothGattServer = bluetoothManager.openGattServer(applicationContext, mGattServerCallback)
+
+        if (bluetoothGattServer != null) {
+            bluetoothGattServer?.addService(UserProfile.createUserService())
+        }
+    }
+
+    private fun stopServer() {
+        bluetoothGattServer?.clearServices()
+        bluetoothGattServer?.close()
+    }
+
     private val mGattServerCallback = object : BluetoothGattServerCallback() {
-        override fun onCharacteristicReadRequest(
-            device: BluetoothDevice?,
-            requestId: Int,
-            offset: Int,
-            characteristic: BluetoothGattCharacteristic?
-        ) {
 
+        override fun onConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                Log.i(TAG, "BluetoothDevice CONNECTED: $device")
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                Log.i(TAG, "BluetoothDevice DISCONNECTED: $device")
+                //Remove device from any active subscriptions
+                registeredDevices.remove(device)
+            } else {
+                registeredDevices.remove(device)
+            }
         }
 
-        override fun onCharacteristicWriteRequest(
-            device: BluetoothDevice?,
-            requestId: Int,
-            characteristic: BluetoothGattCharacteristic?,
-            preparedWrite: Boolean,
-            responseNeeded: Boolean,
-            offset: Int,
-            value: ByteArray?
-        ) {
-
+        override fun onCharacteristicReadRequest(device: BluetoothDevice, requestId: Int, offset: Int,
+                                                 characteristic: BluetoothGattCharacteristic) {
+            val now = System.currentTimeMillis()
+            goForeground()
+            when {
+                UserProfile.getServiceUUID() == characteristic.uuid -> {
+                    Log.i(TAG, "Read CurrentTime")
+                    bluetoothGattServer?.sendResponse(device,
+                        requestId,
+                        BluetoothGatt.GATT_SUCCESS,
+                        0,
+                        UserProfile.getUserName("JOHN"))
+                }
+                UserProfile.LOCAL_TIME_INFO == characteristic.uuid -> {
+                    Log.i(TAG, "Read LocalTimeInfo")
+                    bluetoothGattServer?.sendResponse(device,
+                        requestId,
+                        BluetoothGatt.GATT_SUCCESS,
+                        0,
+                        UserProfile.getLocalTimeInfo(now))
+                }
+                else -> {
+                    // Invalid characteristic
+                    Log.w(TAG, "Invalid Characteristic Read: " + characteristic.uuid)
+                    bluetoothGattServer?.sendResponse(device,
+                        requestId,
+                        BluetoothGatt.GATT_FAILURE,
+                        0,
+                        null)
+                }
+            }
         }
 
-        override fun onConnectionStateChange(device: BluetoothDevice?, status: Int, newState: Int) {
-            super.onConnectionStateChange(device, status, newState)
+        override fun onDescriptorReadRequest(device: BluetoothDevice, requestId: Int, offset: Int,
+                                             descriptor: BluetoothGattDescriptor) {
+            if (UserProfile.CLIENT_CONFIG == descriptor.uuid) {
+                Log.d(TAG, "Config descriptor read")
+                val returnValue = if (registeredDevices.contains(device)) {
+                    BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                } else {
+                    BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                }
+                bluetoothGattServer?.sendResponse(device,
+                    requestId,
+                    BluetoothGatt.GATT_SUCCESS,
+                    0,
+                    returnValue)
+            } else {
+                Log.w(TAG, "Unknown descriptor read request")
+                bluetoothGattServer?.sendResponse(device,
+                    requestId,
+                    BluetoothGatt.GATT_FAILURE,
+                    0, null)
+            }
         }
 
-        override fun onDescriptorReadRequest(
-            device: BluetoothDevice?,
-            requestId: Int,
-            offset: Int,
-            descriptor: BluetoothGattDescriptor?
-        ) {
+        override fun onDescriptorWriteRequest(device: BluetoothDevice, requestId: Int,
+                                              descriptor: BluetoothGattDescriptor,
+                                              preparedWrite: Boolean, responseNeeded: Boolean,
+                                              offset: Int, value: ByteArray) {
+            if (UserProfile.CLIENT_CONFIG == descriptor.uuid) {
+                if (Arrays.equals(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, value)) {
+                    Log.d(TAG, "Subscribe device to notifications: $device")
+                    registeredDevices.add(device)
+                } else if (Arrays.equals(BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE, value)) {
+                    Log.d(TAG, "Unsubscribe device from notifications: $device")
+                    registeredDevices.remove(device)
+                }
 
-        }
-
-        override fun onDescriptorWriteRequest(
-            device: BluetoothDevice?,
-            requestId: Int,
-            descriptor: BluetoothGattDescriptor?,
-            preparedWrite: Boolean,
-            responseNeeded: Boolean,
-            offset: Int,
-            value: ByteArray?
-        ) {
-
-        }
-
-        override fun onExecuteWrite(device: BluetoothDevice?, requestId: Int, execute: Boolean) {
-            super.onExecuteWrite(device, requestId, execute)
-        }
-
-        override fun onNotificationSent(device: BluetoothDevice?, status: Int) {
-            super.onNotificationSent(device, status)
+                if (responseNeeded) {
+                    bluetoothGattServer?.sendResponse(device,
+                        requestId,
+                        BluetoothGatt.GATT_SUCCESS,
+                        0, null)
+                }
+            } else {
+                Log.w(TAG, "Unknown descriptor write request")
+                if (responseNeeded) {
+                    bluetoothGattServer?.sendResponse(device,
+                        requestId,
+                        BluetoothGatt.GATT_FAILURE,
+                        0, null)
+                }
+            }
         }
 
         override fun onServiceAdded(status: Int, service: BluetoothGattService?) {
             super.onServiceAdded(status, service)
+
+        }
+    }
+
+    private fun notifyRegisteredDevices() {
+        if (registeredDevices.isEmpty()) {
+            Log.i(TAG, "No subscribers registered")
+            return
+        }
+
+        val exactUser = UserProfile.getUserName("Brad")
+
+        Log.i(TAG, "Sending update to ${registeredDevices.size} subscribers")
+
+        for (device in registeredDevices) {
+            bluetoothGattServer?.cancelConnection(device)
+            val userCharacteristic = bluetoothGattServer
+                ?.getService(UserProfile.getServiceUUID())
+                ?.getCharacteristic(UserProfile.getNameCharUUID())
+            userCharacteristic?.value = exactUser
+            bluetoothGattServer?.notifyCharacteristicChanged(device, userCharacteristic, false)
+        }
+        if (registeredDevices.isNotEmpty()) {
+            Log.i(TAG, "No subscribers registered")
+            startServer()
         }
     }
 

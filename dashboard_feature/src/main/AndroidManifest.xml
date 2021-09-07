@@ -21,8 +21,6 @@
     </dist:module>
 
     <application>
-        <activity android:name=".DashboardActivity"></activity>
-
         <service
             android:name=".service.BleAdvertiserService"
             android:enabled="true"

@@ -3,8 +3,8 @@ package com.luthtan.simplebleproject.data.repository.dashboard
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.luthtan.simplebleproject.data.network.ApiResponse
-import com.luthtan.simplebleproject.data.network.datasource.LocalDataSource
-import com.luthtan.simplebleproject.data.network.datasource.RemoteDataSource
+import com.luthtan.simplebleproject.data.datasource.LocalDataSource
+import com.luthtan.simplebleproject.data.datasource.RemoteDataSource
 import com.luthtan.simplebleproject.data.utils.AppExecutors
 import com.luthtan.simplebleproject.domain.entities.dashboard.BleEntity
 import com.luthtan.simplebleproject.domain.response.dashboard.BleResponse

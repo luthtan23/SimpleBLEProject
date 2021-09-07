@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.luthtan.simplebleproject.DASHBOARD_PACKAGE
+import com.luthtan.simplebleproject.util.DASHBOARD_PACKAGE
 import com.luthtan.simplebleproject.data.repository.PreferencesRepository
 import com.luthtan.simplebleproject.login_feature.R
 import com.luthtan.simplebleproject.login_feature.databinding.FragmentLoginBinding
@@ -36,23 +36,23 @@ class LoginFragment : Fragment() {
 
         binding.btnLoginLogin.setOnClickListener { dashboardActivity() }
 
-        binding.tvLoginRegister.makeLinks(pairRegisterLink)
+//        binding.tvLoginRegister.makeLinks(pairRegisterLink)
     }
 
-    private val pairRegisterLink = Pair(
+   /* private val pairRegisterLink = Pair(
         LOGIN_TO_REGISTER_LINK, View.OnClickListener {
             registerFragment()
         }
     )
-
-    private fun registerFragment() {
+*/
+    /*private fun registerFragment() {
         val registerFragment = RegisterFragment()
         requireActivity().supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_login_container, registerFragment, registerFragment.tag)
             addToBackStack(null)
             commit()
         }
-    }
+    }*/
 
     private fun dashboardActivity() {
         Intent().setClassName(
