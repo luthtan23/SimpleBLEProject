@@ -9,6 +9,7 @@ object UserProfile {
 
     var serviceUuid: String = ""
     var nameCharUuid: ByteArray? = null
+    var username: String = ""
 
     val LOCAL_TIME_INFO: UUID = UUID.fromString("00002a0f-0000-1000-8000-00805f9b34fb")
     /* Mandatory Client Characteristic Config Descriptor */
@@ -26,7 +27,7 @@ object UserProfile {
     }
 
     fun getNameCharUUID(): UUID {
-        return UUID.nameUUIDFromBytes(nameCharUuid)
+        return UUID.nameUUIDFromBytes(username.toByteArray(Charsets.UTF_8))
     }
 
     fun createUserService(): BluetoothGattService {
@@ -53,8 +54,8 @@ object UserProfile {
         return service
     }
 
-    fun getUserName(name: String): ByteArray {
-        return name.toByteArray(Charsets.UTF_8)
+    fun getUserName(): ByteArray {
+        return username.toByteArray(Charsets.UTF_8)
     }
 
     fun getExactTime(timestamp: Long, adjustReason: Byte): ByteArray {

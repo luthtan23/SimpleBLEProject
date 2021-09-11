@@ -1,23 +1,27 @@
 package com.luthtan.simplebleproject.login_feature.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.luthtan.simplebleproject.util.DASHBOARD_PACKAGE
 import com.luthtan.simplebleproject.data.repository.PreferencesRepository
-import com.luthtan.simplebleproject.login_feature.R
+import com.luthtan.simplebleproject.data.utils.USER_NAME_KEY_LOGIN_TO_DASHBOARD
+import com.luthtan.simplebleproject.data.utils.UUID_KEY_LOGIN_TO_DASHBOARD
 import com.luthtan.simplebleproject.login_feature.databinding.FragmentLoginBinding
+import com.luthtan.simplebleproject.login_feature.util.DASHBOARD_PACKAGE
 import com.luthtan.simplebleproject.login_feature.util.LOGIN_DASHBOARD_NAME_ACTIVITY
 import com.luthtan.simplebleproject.login_feature.util.LOGIN_TO_REGISTER_LINK
 import com.luthtan.simplebleproject.login_feature.util.makeLinks
+import com.luthtan.simplebleproject.R
 import org.koin.android.ext.android.inject
 
 class LoginFragment : Fragment() {
 
-    private val preference: PreferencesRepository by inject()
+    private val preferences: PreferencesRepository by inject()
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -55,7 +59,30 @@ class LoginFragment : Fragment() {
     }*/
 
     private fun dashboardActivity() {
-        Intent().setClassName(
+        val username = binding.etLoginUsername.text
+        if (username.isNullOrEmpty()) {
+            binding.etLoginUsername.error = "Please fill your username"
+            return
+        }
+        val uuid = binding.etLoginUuid.text
+        if (uuid.isNullOrEmpty()) {
+            binding.etLoginUuid.error = "Please fill your uuid"
+            return
+        }
+        if (uuid.length != "00002a0f-0000-1000-8000-00805f9b34fb".length) {
+
+            return
+        }
+        preferences.setUsernameRequest(username.toString())
+        preferences.setUuidRequest(uuid.toString())
+        actionToDashboardActivity(username.toString(), uuid.toString())
+    }
+
+    private fun actionToDashboardActivity(username: String, uuid: String) {
+        Intent()
+            .putExtra(USER_NAME_KEY_LOGIN_TO_DASHBOARD, username)
+            .putExtra(UUID_KEY_LOGIN_TO_DASHBOARD, uuid)
+            .setClassName(
             requireContext(),
             DASHBOARD_PACKAGE.plus(LOGIN_DASHBOARD_NAME_ACTIVITY)
         ).also { startActivity(it) }

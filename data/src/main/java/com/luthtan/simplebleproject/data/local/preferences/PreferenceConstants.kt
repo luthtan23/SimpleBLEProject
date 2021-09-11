@@ -7,5 +7,6 @@ object PreferenceConstants {
     const val STATE_ADVERTISING = "state_advertising"
     const val USERNAME_REQUEST = "username_request"
     const val PASSWORD_REQUEST = "password_request"
+    const val UUID_REQUEST = "uuid_request"
 
 }

@@ -7,3 +7,5 @@ const val LOGIN_DASHBOARD_NAME_ACTIVITY = ".DashboardActivity"
 
 const val PRIVACY_AGREEMENT_TO_REGISTER_REQUEST_KEY = "isAcceptPrivacyKey"
 const val PRIVACY_AGREEMENT_TO_REGISTER_STATE_KEY = "isAcceptPrivacy"
+
+const val DASHBOARD_PACKAGE = "com.luthtan.simplebleproject.dashboard_feature"
