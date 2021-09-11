@@ -29,8 +29,6 @@ class BleAdvertiserService : Service() {
     private lateinit var bluetoothAdapter: BluetoothAdapter
     private lateinit var bluetoothManager: BluetoothManager
 
-    private var isGattRegistered = false
-
     private val registeredDevices = mutableSetOf<BluetoothDevice>()
 
     /**
@@ -88,7 +86,7 @@ class BleAdvertiserService : Service() {
         }
     }
 
-    private fun goForeground() {
+    private fun goForeground(status: String, message: String) {
         val notificationIntent = Intent(this, DashboardActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
         val nBuilder = when {
@@ -106,8 +104,8 @@ class BleAdvertiserService : Service() {
             else -> Notification.Builder(this)
         }
 
-        val notification = nBuilder.setContentTitle(getString(R.string.bt_notif_title))
-            .setContentText(getString(R.string.bt_notif_txt))
+        val notification = nBuilder.setContentTitle(status)
+            .setContentText(message)
             .setSmallIcon(R.drawable.ic_stat_notification)
             .setContentIntent(pendingIntent)
             .build()
@@ -135,6 +133,7 @@ class BleAdvertiserService : Service() {
         override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
             super.onStartSuccess(settingsInEffect)
             Log.d(TAG, "Advertising successfully started")
+            goForeground("Advertising sukses", "next notif kuduna connect ka bluetooth.")
         }
     }
 
@@ -205,8 +204,6 @@ class BleAdvertiserService : Service() {
 
     private fun startServer() {
         Log.i(TAG, "Start Server BLE, UUID: ${UserProfile.getServiceUUID()}")
-        bluetoothGattServer?.clearServices()
-        bluetoothGattServer?.close()
         bluetoothGattServer = bluetoothManager.openGattServer(applicationContext, mGattServerCallback)
 
         if (bluetoothGattServer != null) {
@@ -215,7 +212,6 @@ class BleAdvertiserService : Service() {
     }
 
     private fun stopServer() {
-        bluetoothGattServer?.clearServices()
         bluetoothGattServer?.close()
     }
 
@@ -223,6 +219,8 @@ class BleAdvertiserService : Service() {
 
         override fun onConnectionStateChange(device: BluetoothDevice, status: Int, newState: Int) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                stopForeground(true)
+                goForeground("Keur Connect ka device: $device", "next GATT server, mun acan restart advertising")
                 Log.i(TAG, "BluetoothDevice CONNECTED: $device")
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "BluetoothDevice DISCONNECTED: $device")
@@ -236,15 +234,16 @@ class BleAdvertiserService : Service() {
         override fun onCharacteristicReadRequest(device: BluetoothDevice, requestId: Int, offset: Int,
                                                  characteristic: BluetoothGattCharacteristic) {
             val now = System.currentTimeMillis()
-            goForeground()
+            stopForeground(true)
+            goForeground("GATT sukses", "Ngaran UUID: ${UserProfile.serviceUuid}")
             when {
-                UserProfile.getServiceUUID() == characteristic.uuid -> {
+                UserProfile.getNameCharUUID() == characteristic.uuid -> {
                     Log.i(TAG, "Read CurrentTime")
                     bluetoothGattServer?.sendResponse(device,
                         requestId,
                         BluetoothGatt.GATT_SUCCESS,
                         0,
-                        UserProfile.getUserName("JOHN"))
+                        UserProfile.getUserName())
                 }
                 UserProfile.LOCAL_TIME_INFO == characteristic.uuid -> {
                     Log.i(TAG, "Read LocalTimeInfo")
@@ -331,7 +330,7 @@ class BleAdvertiserService : Service() {
             return
         }
 
-        val exactUser = UserProfile.getUserName("Brad")
+        val exactUser = UserProfile.getUserName()
 
         Log.i(TAG, "Sending update to ${registeredDevices.size} subscribers")
 

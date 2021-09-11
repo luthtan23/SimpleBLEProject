@@ -12,6 +12,9 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+const val USER_NAME_KEY_LOGIN_TO_DASHBOARD = "username_login"
+const val UUID_KEY_LOGIN_TO_DASHBOARD = "uuid_login"
+
 const val LOGGER = "DATABASE_LOGGER"
 const val MAXIMUM_DATABASE_FILE = 3
 

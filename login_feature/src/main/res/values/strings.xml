@@ -14,4 +14,5 @@
     <string name="register_login_description">Already have an Account? Login</string>
     <string name="register_privacy_agreement_text">Privacy Agreement</string>
     <string name="privacy_agreement_accept_text">Accept</string>
+    <string name="login_uuid_description">uuid</string>
 </resources>

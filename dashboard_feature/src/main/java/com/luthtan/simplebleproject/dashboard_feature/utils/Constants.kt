@@ -2,6 +2,7 @@ package com.luthtan.simplebleproject.dashboard_feature.utils
 
 import android.Manifest
 import android.os.ParcelUuid
+import android.text.Editable
 
 const val BT_ADVERTISING_FAILED_EXTRA_CODE = "bt_adv_failure_code"
 const val INVALID_CODE = -1
@@ -25,3 +26,4 @@ const val BLUETOOTH_EXTRA_INT = 10
 
 const val ADVERTISING_FAILED_EXTRA_CODE = "com.example.android.bluetoothadvertisements.advertising_failed"
 
+fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)

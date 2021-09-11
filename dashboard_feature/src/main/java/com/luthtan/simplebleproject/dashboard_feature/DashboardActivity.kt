@@ -26,8 +26,10 @@ import com.luthtan.simplebleproject.dashboard_feature.di.dashboardModule
 import com.luthtan.simplebleproject.dashboard_feature.service.BleAdvertiserService
 import com.luthtan.simplebleproject.dashboard_feature.utils.*
 import com.luthtan.simplebleproject.dashboard_feature.viewmodel.DashboardViewModel
+import com.luthtan.simplebleproject.data.repository.PreferencesRepository
+import com.luthtan.simplebleproject.data.utils.USER_NAME_KEY_LOGIN_TO_DASHBOARD
+import com.luthtan.simplebleproject.data.utils.UUID_KEY_LOGIN_TO_DASHBOARD
 import com.luthtan.simplebleproject.domain.entities.dashboard.BleEntity
-import org.jetbrains.anko.alert
 import org.json.JSONObject
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -40,11 +42,11 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
     private val database: DatabaseReference by inject()
 
+    private val preferences: PreferencesRepository by inject()
+
     private val dashboardViewModel: DashboardViewModel by viewModel()
 
     private lateinit var activityDashboardBinding: ActivityDashboardBinding
-
-    private var isConnectedService = false
 
     private val dashboardAdapter by lazy {
         DashboardAdapter()
@@ -73,6 +75,26 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
     private val isLocationPermissionGranted get() = hasPermission(LOCATION_FINE_PERM)
 
+    private val usernameLogin by lazy {
+        val extras = intent.extras
+        if (extras != null) {
+            extras.getString(USER_NAME_KEY_LOGIN_TO_DASHBOARD)
+        } else {
+            preferences.getUsernameRequest()
+        }
+    }
+
+    private val uuidLogin by lazy {
+        val extras = intent.extras
+        if (extras != null) {
+            extras.getString(UUID_KEY_LOGIN_TO_DASHBOARD)
+        } else {
+            preferences.getUuidRequest()
+        }
+    }
+
+    private var isStateAdvertising = preferences.getAdvertisingState()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -87,10 +109,17 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
 
         setBleHistoryAdapter()
 
+        UserProfile.username = usernameLogin.toString()
+
 //        addPostEventListener(database)
 
         activityDashboardBinding.btnDashboardStartStopAdvertising.setOnClickListener(this)
-        activityDashboardBinding.btnDashboardStartStopAdvertising.text = "Start Advertising"
+        activityDashboardBinding.tvDashboardUsername.text = usernameLogin
+        activityDashboardBinding.etDashboardUuid.text = uuidLogin?.toEditable()
+        when (isStateAdvertising) {
+            true -> activityDashboardBinding.btnDashboardStartStopAdvertising.text = "Stop Advertising"
+            false -> activityDashboardBinding.btnDashboardStartStopAdvertising.text = "Start Advertising"
+        }
     }
 
     override fun onDestroy() {
@@ -122,8 +151,9 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when(v.id) {
             R.id.btn_dashboard_start_stop_advertising -> {
-                isConnectedService = !isConnectedService
-                if (isConnectedService) {
+                preferences.setAdvertisingState(!isStateAdvertising)
+                isStateAdvertising = !isStateAdvertising
+                if (isStateAdvertising) {
                     activityDashboardBinding.btnDashboardStartStopAdvertising.text = "Stop Advertising"
                     UserProfile.setServiceUUID(activityDashboardBinding.etDashboardUuid.text.toString(), "brad")
                     startService(getServiceIntent(this))
@@ -230,13 +260,13 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
             promptEnableBluetooth()
             if (!bluetoothAdapter.isMultipleAdvertisementSupported) {
                 runOnUiThread {
-                    alert {
+                    /*alert {
                         message = "Bluetooth not supported advertisement"
                         isCancelable = false
                         positiveButton(R.string.ok) {
                             finish()
                         }
-                    }.show()
+                    }.show()*/
                 }
             }
         }
