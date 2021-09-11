@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import com.luthtan.simplebleproject.common.makeLinks
 import com.luthtan.simplebleproject.data.repository.PreferencesRepository
 import com.luthtan.simplebleproject.login_feature.R
 import com.luthtan.simplebleproject.login_feature.databinding.FragmentRegisterBinding
@@ -49,7 +50,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
         binding.tvLoginRegister.makeLinks(pairMakeLinkRegister)
 
-//        binding.tvRegisterPrivacyAgreement.makeLinks(pairMakeLinkPrivacyAgreement)
+        binding.tvRegisterPrivacyAgreement.makeLinks(pairMakeLinkPrivacyAgreement)
     }
 
     override fun onResume() {
@@ -89,18 +90,18 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         requireActivity().supportFragmentManager.popBackStack()
     })
 
-    /*private val pairMakeLinkPrivacyAgreement = Pair(REGISTER_TO_PRIVACY_AGREEMENT_LINK, View.OnClickListener {
+    private val pairMakeLinkPrivacyAgreement = Pair(REGISTER_TO_PRIVACY_AGREEMENT_LINK, View.OnClickListener {
         privacyAgreementFragment()
-    })*/
+    })
 
-    /*private fun privacyAgreementFragment() {
+    private fun privacyAgreementFragment() {
         val privacyAgreementFragment = PrivacyAgreementFragment()
         requireActivity().supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_login_container, privacyAgreementFragment, privacyAgreementFragment.tag)
+            replace(R.id.frame_container, privacyAgreementFragment, privacyAgreementFragment.tag)
             addToBackStack(null)
             commit()
         }
-    }*/
+    }
 
 
 

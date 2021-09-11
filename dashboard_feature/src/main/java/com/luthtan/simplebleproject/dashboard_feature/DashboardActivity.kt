@@ -20,6 +20,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.*
 import com.google.gson.Gson
+import com.luthtan.simplebleproject.common.CustomAlertDialog
+import com.luthtan.simplebleproject.common.toEditable
+import com.luthtan.simplebleproject.common.uuidFormatChecker
 import com.luthtan.simplebleproject.dashboard_feature.adapter.DashboardAdapter
 import com.luthtan.simplebleproject.dashboard_feature.databinding.ActivityDashboardBinding
 import com.luthtan.simplebleproject.dashboard_feature.di.dashboardModule
@@ -153,9 +156,19 @@ class DashboardActivity : AppCompatActivity(), View.OnClickListener {
             R.id.btn_dashboard_start_stop_advertising -> {
                 preferences.setAdvertisingState(!isStateAdvertising)
                 isStateAdvertising = !isStateAdvertising
+                val newUuid = activityDashboardBinding.etDashboardUuid.text.toString()
+                if (!uuidFormatChecker(newUuid)) {
+                    CustomAlertDialog(
+                        this,
+                        null,
+                        resources.getString(R.string.dashboard_error_uuid_description),
+                        false
+                    ) { dialog, which -> dialog.dismiss() }.show()
+                    return
+                }
                 if (isStateAdvertising) {
                     activityDashboardBinding.btnDashboardStartStopAdvertising.text = "Stop Advertising"
-                    UserProfile.setServiceUUID(activityDashboardBinding.etDashboardUuid.text.toString(), "brad")
+                    UserProfile.setServiceUUID(newUuid, "brad")
                     startService(getServiceIntent(this))
                 } else {
                     activityDashboardBinding.btnDashboardStartStopAdvertising.text = "Start Advertising"

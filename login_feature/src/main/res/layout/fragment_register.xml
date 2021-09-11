@@ -29,7 +29,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textlayout_register_full_name"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -49,7 +48,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textlayout_register_position"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -69,7 +67,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textlayout_register_email_id"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -89,7 +86,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textlayout_register_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -145,8 +141,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/checkbox_register_privacy_agreement"
                 android:layout_centerVertical="true"
+                android:textColorLink="@color/white"
                 android:text="@string/register_privacy_agreement_text"
-                android:textColor="@color/customColorTextDefault"
                 android:textSize="16sp" />
 
         </RelativeLayout>

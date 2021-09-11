@@ -1,26 +1,32 @@
 package com.luthtan.simplebleproject.common
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 
-class CustomAlertDialog(val context: Context) {
+class CustomAlertDialog(
+    private val context: Context, private val title: String?,
+    private val message: String, private val cancelable: Boolean, private val positiveListener: DialogInterface.OnClickListener
+) {
 
-    var message: String? = null
-    var title: String? = null
+    private var negativeListener: DialogInterface.OnClickListener? = null
 
-    constructor(context: Context, message: String) : this(context) {
-        this.message = message
-    }
-    constructor(context: Context, title: String, message: String) : this(context) {
-        this.title = title
-        this.message = message
-    }
-
-
-    init {
-//        this.context = context
+    constructor(context: Context, title: String, message: String, cancelable: Boolean, positiveListener: DialogInterface.OnClickListener,
+    negativeListener: DialogInterface.OnClickListener): this(context, title, message, cancelable, positiveListener)  {
+        this.negativeListener = negativeListener
     }
 
-    fun showAlertDialog() {
 
+    fun show() {
+        val builder = AlertDialog.Builder(context)
+        if (negativeListener != null) {
+            builder.setNegativeButton(CANCEL_TEXT, negativeListener)
+        }
+        builder.setTitle(title)
+            .setMessage(message)
+            .setCancelable(cancelable)
+            .setPositiveButton(OK_TEXT, positiveListener)
+        builder.show()
     }
+
 }

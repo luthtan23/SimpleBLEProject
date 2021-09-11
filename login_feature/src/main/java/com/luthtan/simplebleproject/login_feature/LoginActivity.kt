@@ -13,8 +13,10 @@ class LoginActivity : AppCompatActivity() {
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val loginFragment = LoginFragment()
+
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.frame_container, LoginFragment(), LoginFragment::getTag.toString())
+            add(R.id.frame_container, loginFragment, loginFragment.tag)
             commit()
         }
 

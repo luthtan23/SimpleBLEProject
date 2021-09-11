@@ -1,8 +1,13 @@
 <resources>
+<!--login page-->
     <string name="login_login_description">login</string>
     <string name="login_password_description">password</string>
     <string name="login_username_description">username</string>
     <string name="login_register_description">Don\'t have an account? Register</string>
+    <string name="login_uuid_description">uuid</string>
+    <string name="login_error_uuid_description">uuid is wrong format, please check again your uuid!</string>
+
+
     <string name="register_description">Register your account,</string>
     <string name="register_full_name">Full Name</string>
     <string name="register_small_description">Sign up to get started eye-beacon!</string>
@@ -14,5 +19,4 @@
     <string name="register_login_description">Already have an Account? Login</string>
     <string name="register_privacy_agreement_text">Privacy Agreement</string>
     <string name="privacy_agreement_accept_text">Accept</string>
-    <string name="login_uuid_description">uuid</string>
 </resources>

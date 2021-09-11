@@ -1,12 +1,10 @@
 package com.luthtan.simplebleproject.login_feature.ui
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.luthtan.simplebleproject.data.repository.PreferencesRepository
 import com.luthtan.simplebleproject.data.utils.USER_NAME_KEY_LOGIN_TO_DASHBOARD
@@ -14,9 +12,11 @@ import com.luthtan.simplebleproject.data.utils.UUID_KEY_LOGIN_TO_DASHBOARD
 import com.luthtan.simplebleproject.login_feature.databinding.FragmentLoginBinding
 import com.luthtan.simplebleproject.login_feature.util.DASHBOARD_PACKAGE
 import com.luthtan.simplebleproject.login_feature.util.LOGIN_DASHBOARD_NAME_ACTIVITY
+import com.luthtan.simplebleproject.common.CustomAlertDialog
+import com.luthtan.simplebleproject.common.makeLinks
+import com.luthtan.simplebleproject.common.uuidFormatChecker
+import com.luthtan.simplebleproject.login_feature.R
 import com.luthtan.simplebleproject.login_feature.util.LOGIN_TO_REGISTER_LINK
-import com.luthtan.simplebleproject.login_feature.util.makeLinks
-import com.luthtan.simplebleproject.R
 import org.koin.android.ext.android.inject
 
 class LoginFragment : Fragment() {
@@ -40,23 +40,23 @@ class LoginFragment : Fragment() {
 
         binding.btnLoginLogin.setOnClickListener { dashboardActivity() }
 
-//        binding.tvLoginRegister.makeLinks(pairRegisterLink)
+        binding.tvLoginRegister.makeLinks(pairRegisterLink)
     }
 
-   /* private val pairRegisterLink = Pair(
+    private val pairRegisterLink = Pair(
         LOGIN_TO_REGISTER_LINK, View.OnClickListener {
             registerFragment()
         }
     )
-*/
-    /*private fun registerFragment() {
+
+    private fun registerFragment() {
         val registerFragment = RegisterFragment()
         requireActivity().supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_login_container, registerFragment, registerFragment.tag)
+            replace(R.id.frame_container, registerFragment, registerFragment.tag)
             addToBackStack(null)
             commit()
         }
-    }*/
+    }
 
     private fun dashboardActivity() {
         val username = binding.etLoginUsername.text
@@ -69,8 +69,13 @@ class LoginFragment : Fragment() {
             binding.etLoginUuid.error = "Please fill your uuid"
             return
         }
-        if (uuid.length != "00002a0f-0000-1000-8000-00805f9b34fb".length) {
-
+        if (!uuidFormatChecker(uuid.toString())) {
+            CustomAlertDialog(
+                requireContext(),
+                null,
+                getString(R.string.login_error_uuid_description),
+                false
+            ) { dialog, which -> dialog.dismiss() }.show()
             return
         }
         preferences.setUsernameRequest(username.toString())
