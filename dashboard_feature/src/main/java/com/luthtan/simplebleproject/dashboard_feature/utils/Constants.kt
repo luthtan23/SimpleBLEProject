@@ -25,5 +25,3 @@ const val BLUETOOTH_EXTRA = "android.bluetooth.adapter.extra.STATE"
 const val BLUETOOTH_EXTRA_INT = 10
 
 const val ADVERTISING_FAILED_EXTRA_CODE = "com.example.android.bluetoothadvertisements.advertising_failed"
-
-fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)

@@ -25,7 +25,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textlayout_login_username_description"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -70,7 +69,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textlayout_login_uuid_description"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -98,8 +96,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:padding="16dp"
-            android:text="@string/login_login_description"
-            android:textColor="@color/black" />
+            android:text="@string/login_login_description" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_test_image"

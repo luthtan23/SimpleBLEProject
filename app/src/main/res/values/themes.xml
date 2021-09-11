@@ -10,6 +10,7 @@
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorAccent">@color/primaryDarkColor</item>
 
         <item name="android:textColor">@color/customColorTextDefault</item>
 
@@ -30,6 +31,9 @@
         <item name="android:navigationBarColor">@color/customNavigationBarButton</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
 
+        <item name="materialButtonStyle">@style/CustomButtonStyle</item>
+        <item name="textInputStyle">@style/CustomTextFieldStyle</item>
+
     </style>
 
     <style name="SplashScreenStyle" parent="Theme.SimpleBLEProject">
@@ -39,10 +43,12 @@
     <style name="CustomTextFieldStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="passwordToggleTint">@color/custom_textfield_stroke</item>
         <item name="hintTextColor">@color/white</item>
+        <item name="boxStrokeColor">@color/custom_textfield_stroke</item>
     </style>
 
     <style name="CustomButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/custom_background_tint</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="TextAppearance.App.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline5">

@@ -1,10 +1,47 @@
-package com.luthtan.simplebleproject.login_feature.util
+package com.luthtan.simplebleproject.common
 
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.View
 import android.widget.TextView
+
+
+fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+
+private const val UUID_FORMAT = "00000000-0000-0000-0000-000000000000"
+
+fun uuidFormatChecker(uuid: String): Boolean {
+    var stateUuid = true
+
+    try {
+        if (uuid.length != UUID_FORMAT.length) {
+            stateUuid = false
+        } else {
+            if (uuid[8].toString() != "-") {
+                stateUuid = false
+                Log.i("UUID_1", uuid[8].toString())
+            }
+            if (uuid[13].toString() != "-") {
+                stateUuid = false
+                Log.i("UUID_2", uuid[13].toString())
+            }
+            if (uuid[18].toString() != "-") {
+                stateUuid = false
+                Log.i("UUID_3", uuid[18].toString())
+            }
+            if (uuid[23].toString() != "-") {
+                stateUuid = false
+                Log.i("UUID_4", uuid[23].toString())
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    return stateUuid
+}
 
 fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
     val spannableString = SpannableString(this.text)
